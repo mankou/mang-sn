@@ -66,4 +66,9 @@
 	<!-- 支持事务 @Transactional 标记 -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 	
+	  
+	<bean id="sn-invokeCode" class="com.mang.sn.tools.InvokeCode">
+		<property name="classPath" value="com.mang.sn" />
+	</bean>
+	
 </beans>

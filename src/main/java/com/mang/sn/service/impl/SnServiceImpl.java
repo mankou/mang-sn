@@ -11,6 +11,7 @@ import javax.persistence.SynchronizationType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import com.mang.sn.entity.SnNumberLog;
 import com.mang.sn.generate.DateGenerate;
 import com.mang.sn.generate.SnGenerate;
 import com.mang.sn.service.SnService;
+import com.mang.sn.tools.InvokeCode;
 import com.mang.sn.tools.SnType;
 import com.mang.sn.dao.SnNumberLogDAO;
 import com.mang.sn.dao.TimeDAO;
@@ -28,6 +30,12 @@ import com.mang.sn.dao.SnNumberDAO;
 @Transactional
 public class SnServiceImpl implements SnService {
 	private static Logger logger = Logger. getLogger(SnServiceImpl.class);
+	
+	
+	@Autowired(required=false)
+	@Qualifier("sn-invokeCode")
+	private InvokeCode invodeCode;
+	
 	
 	@Autowired
 	private SnNumberDAO snNumberDAO;
@@ -139,25 +147,29 @@ public class SnServiceImpl implements SnService {
 		
 		//XXX 取调用方法的代码还不知如何写 因为我希望能通过配置的方式修改取哪个包
 		
-		String message = "";
-		StringBuffer sb = new StringBuffer();
-		StackTraceElement stack[] = Thread.currentThread().getStackTrace();
-		for (StackTraceElement ste : stack) {
-			String className = ste.getClassName();
-			String methodName = ste.getMethodName();
-			int line = ste.getLineNumber();
-			if (className.indexOf("yhsq") != -1) {
-				sb.append(className + "." + methodName + ":" + line + "&");
+		if(invodeCode!=null &&invodeCode.getClassPath()!=null && !"".equals(invodeCode.getClassPath())){
+			String invokeCodePath=invodeCode.getClassPath();
+			
+			String message = "";
+			StringBuffer sb = new StringBuffer();
+			StackTraceElement stack[] = Thread.currentThread().getStackTrace();
+			for (StackTraceElement ste : stack) {
+				String className = ste.getClassName();
+				String methodName = ste.getMethodName();
+				int line = ste.getLineNumber();
+				if (className.indexOf(invokeCodePath) != -1) {
+					sb.append(className + "." + methodName + ":" + line + "&");
+				}
+				
 			}
-
+			if(sb.length()>0){
+				int length =sb.length()>800?800:sb.length();
+				message=sb.substring(0, length-1); //截取字符串限制长度
+			}
+			
+			logger.info("[生成单号]调用java类信息:"+message);
+			numberLog.setInvokeCode(message);
 		}
-		if(sb.length()>0){
-			int length =sb.length()>800?800:sb.length();
-			message=sb.substring(0, length-1); //截取字符串限制长度
-		}
-		
-		logger.info("[生成单号]调用java类信息:"+message);
-		numberLog.setInvokeCode(message);
 		return snNumberLogDAO.saveOrUpdate(numberLog);
 		
 	}
