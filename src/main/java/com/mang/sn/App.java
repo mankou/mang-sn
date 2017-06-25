@@ -4,7 +4,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.mang.sn.service.TestService;
+import com.mang.sn.service.TestSnService;
 
 /**
  * Hello world!
@@ -21,7 +21,7 @@ public class App
         
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         
-        TestService service=ctx.getBean(TestService.class);
+        TestSnService service=ctx.getBean(TestSnService.class);
         service.testTransaction();
         
         System.out.println("hah");

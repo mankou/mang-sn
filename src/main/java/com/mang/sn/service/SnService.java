@@ -6,7 +6,7 @@ public interface SnService {
 	 * 因历史原因该方法保留,但其是专门产生时间类型单号的方法。
 	 * 以后尽量采用下面的方法
 	 * */
-	public String doGetDateSn(String prefix,String type);
+	public String doGetDateSn(String prefix,String busType);
 	
 	/**
 	 * descirption:生成单号

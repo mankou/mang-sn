@@ -6,13 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mang.sn.entity.SnNumberLog;
 import com.mang.sn.service.SnService;
-import com.mang.sn.service.TestService;
+import com.mang.sn.service.TestSnService;
 
 import com.mang.sn.dao.SnNumberLogDAO;
 
 @Service
 @Transactional
-public class TestServiceImpl implements TestService {
+public class TestSnServiceImpl implements TestSnService {
 	
 	@Autowired
 	private SnService snService;
