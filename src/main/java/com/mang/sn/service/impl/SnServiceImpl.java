@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
+import javax.persistence.SynchronizationType;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.mang.sn.entity.SnNumberLog;
 import com.mang.sn.service.SnService;
-
+import com.mang.sn.tools.SnType;
 import com.mang.sn.dao.SnNumberLogDAO;
 import com.mang.sn.dao.TimeDAO;
 import com.mang.sn.dao.SnNumberDAO;
@@ -37,127 +39,101 @@ public class SnServiceImpl implements SnService {
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public String doGetDateSn(String prefix, String type) {
-		String code = doGetSn(prefix, type, "date", "null");
+		String code = doGetSn(prefix, type, SnType.date, "null");
 		return code;
 	}
 
 	@Override
 	public String doGetCurrentSn(String prefix, String type) {
-		return doGetCurrentSn(prefix, type, "date", null);
+		return doGetCurrentSn(prefix, type, SnType.date, null);
 	}
 	
 	@Override
-	public String doGetCurrentSn(String prefix, String type, String option,String precision) {
+	public String doGetCurrentSn(String prefix, String busType, SnType snType,String precision) {
 		String code=null;
 		Long maxIndex=null;
 		
-		//根据option 取出code类型 是date、number、datenumber等  默认取date类型
-		String codeType="0"; 
-		if("date".equals(option)){
-			codeType="0";
-		}else if("number".equals(option)){
-			codeType="1";
-		}else if("datenumber".equals(option)){
-			codeType="2";
-		}
+		Integer codeType=snType.getCode();
 		
 		//取最大值
-		maxIndex = getMaxIndex(type, codeType);
+		maxIndex = getMaxIndex(busType, codeType);
 		
 		//生成单号
-		if("date".equals(option)){
-			code= generateCode_Date(type,prefix, maxIndex);
+		if(snType==SnType.date){
+			code= generateCode_Date(prefix, maxIndex);
 		}
-		if("number".equals(option)){
-			code=generateCode_Number(type,prefix,precision,maxIndex);
+		if(snType==SnType.number){
+			code=generateCode_Number(prefix,precision,maxIndex);
 		}
-		
-		if("datenumber".equals(option)){
-			code=generateCode_DateNumber(type,prefix,maxIndex);
+		if(snType==SnType.datenumber){
+			code=generateCode_DateNumber(prefix,maxIndex);
 		}
-		
 		return code;
 	}
 
 	@Override
-	public void addMaxIndex(String type,String option) {
-		String codeType="0";
-		if("date".equals(option)){
-			codeType="0";
-		}else if("number".equals(option)){
-			codeType="1";
-		}
+	public void addMaxIndex(String busType,SnType snType) {
+		
+		int codeType=snType.getCode();
 
-		Long maxIndex = buNumberDAO.getMaxIndex(type, codeType);
+		Long maxIndex = buNumberDAO.getMaxIndex(busType, codeType);
 		if(maxIndex==null){
-			buNumberDAO.insertMaxIndex(type,codeType);
+			buNumberDAO.insertMaxIndex(busType,codeType);
 			maxIndex = 1L;
 		}
 
-		buNumberDAO.updateMaxIndex(maxIndex+1, type, codeType);
+		buNumberDAO.updateMaxIndex(maxIndex+1, busType, codeType);
 
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW) 
-	public String doGetSn(String prefix, String type, String option, String precision) {
+	public String doGetSn(String prefix, String busType, SnType snType, String precision) {
 		logger.info("[生成单号]" + "请求单号开始");
 
 		String code = null;
-		String codeType = null;
+		int codeType;
+		
+		codeType=snType.getCode();
 
-		if (option == null || "".equals(option)) {
-			option = "date";// 默认取date类型
-		}
+		logger.info("[生成单号]前缀:" + prefix + "\t单号生成方式:" + codeType + "\t单号类型:" + busType);
 
-		// 根据option 取出code类型 是date、number、datenumber等
-		if ("date".equals(option)) {
-			codeType = "0";
-		} else if ("number".equals(option)) {
-			codeType = "1";
-		} else if ("datenumber".equals(option)) {
-			codeType = "2";
-		}
-
-		logger.info("[生成单号]前缀:" + prefix + "\t单号生成方式:" + codeType + "\t单号类型:" + type);
-
-		// 注 刚本来推崇存储过程方式 因为只要调一下就能取一个单号 但测试时发现因为存储过程中有commit操作 其会影响外层java的事务
-		// 所以决定放弃
-		// 后来解决了spring 配置getCode的事务为独立事务配置 所以也就不需要存储过程的方式了
-		Long maxIndex = null;
 		// 取最大值
-		maxIndex = getMaxIndex(type, codeType);
-		// 生成单号
-		if ("date".equals(option)) {
-			code = generateCode_Date(type, prefix, maxIndex);
-		} else if ("number".equals(option)) {
-			code = generateCode_Number(type, prefix, precision, maxIndex);
-		} else if ("datenumber".equals(option)) {
-			code = generateCode_DateNumber(type, prefix, maxIndex);
+		Long maxIndex = null;
+		maxIndex = getMaxIndex(busType, codeType);
+		
+		
+		//生成单号
+		if (snType==SnType.date) {
+			code = generateCode_Date(prefix, maxIndex);
+		} else if (snType==SnType.number) {
+			code = generateCode_Number(prefix, precision, maxIndex);
+		} else if (snType==SnType.datenumber) {
+			code = generateCode_DateNumber(prefix, maxIndex);
 		}
 
 		// 最大值加1
-		buNumberDAO.updateMaxIndex(maxIndex + 1, type, codeType);
+		buNumberDAO.updateMaxIndex(maxIndex + 1, busType, codeType);
 
+		
 		// 写日志
-		saveNumberLog(prefix, type, code, codeType); // 写单号生成日志(0表示时间类型 1表示数字类型)
+		saveNumberLog(prefix, busType, code, codeType); // 写单号生成日志(0表示时间类型 1表示数字类型)
 		logger.info("[生成单号]" + "生成的单号为:" + code);
 		logger.info("[生成单号]" + "请求单号结束");
-
 		return code;
 	}
 		
-	private Long getMaxIndex(String type,String codeType) {
-		Long maxIndex=buNumberDAO.getMaxIndex(type,codeType);
+	private Long getMaxIndex(String busType,int codeType) {
+		Long maxIndex=buNumberDAO.getMaxIndex(busType,codeType);
 		if(maxIndex==null){
 			//说明没有,先建一新的
-			buNumberDAO.insertMaxIndex(type,codeType);
+			buNumberDAO.insertMaxIndex(busType,codeType);
 			maxIndex=1L;
 		}
 		return maxIndex;
 	}
 	
-	private String generateCode_Number(String type,String prefix,String precision,Long maxIndex) {
+	private String generateCode_Number(String prefix,String precision,Long maxIndex) {
 		// 如果前缀为空则用""代替
 		if (prefix == null) {
 			prefix = "";
@@ -176,14 +152,13 @@ public class SnServiceImpl implements SnService {
 			precision = dfInt.format(Integer.valueOf(precision));
 
 			String format = "%" + precision + "d";
-			String businessPrefix=getBusinessPrefix(type);
-			orderNumber = prefix +businessPrefix+ String.format(format, maxIndex);
+			orderNumber = prefix + String.format(format, maxIndex);
 		}
 
 		return orderNumber;
 	}
 	
-	private String generateCode_Date(String type,String prefix,Long maxIndex){
+	private String generateCode_Date(String prefix,Long maxIndex){
 		String code = null;
 		// 获得当前时间
 		SimpleDateFormat   formatter   =   new   SimpleDateFormat   ("yyyyMMdd"); 
@@ -191,39 +166,23 @@ public class SnServiceImpl implements SnService {
 		
 		Timestamp time=timeDAO.getOracleTime();
 		String   dateNum   =   formatter.format(time);  
-		String businessPrefix=getBusinessPrefix(type);
-		code = prefix+businessPrefix+dateNum+"-"+maxIndex;
-		
+		code = prefix+dateNum+"-"+maxIndex;
 		return code;
 	}
 	
-	/**
-	 * @author m-ning@neusoft.com
-	 * @param prefix:编号前缀
-	 * @param type:编号类型
-	 * @param precision:精度。如为8 则单号长度为8(不包括前缀)
-	 * descirption:生成类似Z20150615-2的编号，但编号是递增的,不是每天都从1开始的那种。
-	 * */
-	private String generateCode_DateNumber(String type,String prefix,Long maxIndex){
+	private String generateCode_DateNumber(String prefix,Long maxIndex){
 		
 		String code = null;
 		// 获得当前时间
 		SimpleDateFormat   formatter   =   new   SimpleDateFormat   ("yyyyMMdd"); 
 		Timestamp time=new Timestamp(System.currentTimeMillis());
 		String   dateNum   =   formatter.format(time); 
-		String businessPrefix=getBusinessPrefix(type);
-		code = prefix+businessPrefix+dateNum+"-"+maxIndex;
+		code = prefix+dateNum+"-"+maxIndex;
 				
 		return code;
 	}
 	
-
-	/**
-	 * @author m-ning@neusft.com
-	 * desc: 写日志 (谁? 请求的单号是多少? 是什么代码调的)
-	 * 
-	 * */
-	private SnNumberLog saveNumberLog(String prefix, String bustype,String sn,String codeType){
+	private SnNumberLog saveNumberLog(String prefix, String bustype,String sn,Integer snType){
 		SnNumberLog numberLog = new SnNumberLog();
 		numberLog.setSn(sn);
 		numberLog.setPrefix(prefix);
@@ -231,7 +190,7 @@ public class SnServiceImpl implements SnService {
 //		numberLog.setRuid(logBO.getCurrentUserCode());
 //		numberLog.setRuname(logBO.getCurrentUserName());
 //		numberLog.setRundate(TimeUtil.getCurrentTime());
-		numberLog.setCodeType(codeType); //单号类型0时间 1数字
+		numberLog.setSnType(snType);
 		
 		//获取调用该方法的方法的信息
 		String message = "";
@@ -257,13 +216,5 @@ public class SnServiceImpl implements SnService {
 		
 	}
 	
-	
-	/**
-	 * 判断是否需要加前缀 如果需要加前缀则返回前缀 否则返回空字符串
-	 * */
-	private String getBusinessPrefix(String type){
-		String prefix="";
-		return prefix;
-	}
 	
 }

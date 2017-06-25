@@ -29,8 +29,8 @@ public class SnNumber implements Serializable {
     /**
      * 单号类型0时间类型 1数字类型
      */
-    @Column(name = "CODE_TYPE", nullable = true)   
-    private String codeType;
+    @Column(name = "SN_TYPE", nullable = true)   
+    private Integer snType;
     
     
     /**
@@ -67,15 +67,6 @@ public class SnNumber implements Serializable {
         return maxindex;
     }
 
-    public void setCodeType(String codeType) {
-        this.codeType = codeType;
-    }
-
-    public String getCodeType() {
-        return codeType;
-    }
-
-
     public String getBusType() {
 		return busType;
 	}
@@ -91,4 +82,17 @@ public class SnNumber implements Serializable {
     public Date getNumDate() {
         return numDate;
     }
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Integer getSnType() {
+		return snType;
+	}
+
+	public void setSnType(Integer snType) {
+		this.snType = snType;
+	}
+	
 }

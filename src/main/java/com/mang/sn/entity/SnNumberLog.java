@@ -70,8 +70,8 @@ public class SnNumberLog implements Serializable {
     /**
      * 单号类型（0时间类型 1数字类型）
      */
-    @Column(name = "CODE_TYPE", nullable = true) 
-    private String codeType;
+    @Column(name = "SN_TYPE", nullable = true) 
+    private Integer snType;
 
     
     
@@ -167,13 +167,6 @@ public class SnNumberLog implements Serializable {
 		this.busType = busType;
 	}
 
-	public String getCodeType() {
-		return codeType;
-	}
-
-	public void setCodeType(String codeType) {
-		this.codeType = codeType;
-	}
 
 	public String getInvokeCode() {
 		return invokeCode;
@@ -222,6 +215,15 @@ public class SnNumberLog implements Serializable {
 	public void setRuntimeEnd(Timestamp runtimeEnd) {
 		this.runtimeEnd = runtimeEnd;
 	}
+
+	public int getSnType() {
+		return snType;
+	}
+
+	public void setSnType(int snType) {
+		this.snType = snType;
+	}
+	
 
 
     

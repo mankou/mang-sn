@@ -10,7 +10,7 @@ import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 import com.mang.sn.entity.SnNumber;
-
+import com.mang.sn.tools.SnType;
 import com.mang.sn.dao.SnNumberDAO;
 
 @Repository
@@ -25,20 +25,19 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Long getMaxIndex(final String busType,final String codeType) {
+	public Long getMaxIndex(final String busType,final int snType) {
 		
 		
 		//bug修复：2014.07.08修复跳号问题
 		String sql="";
-		if("0".equals(codeType)){
-			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.code_type=:codeType for update";
-		}else if("1".equals(codeType)){
-			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.code_type=:codeType for update";
-		}else if("2".equals(codeType)){
-			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.code_type=:codeType for update";
+		if(SnType.date.code==snType){
+			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType for update";
+		}else if(SnType.number.code==snType){
+			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.sn_type=:snType for update";
+		}else if(SnType.datenumber.code==snType){
+			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.sn_type=:snType for update";
 		}
 		 final String ORDERNUMBER_SQL =sql;
         Long orderNumber = (Long)getHibernateTemplate().execute(new HibernateCallback() {
@@ -46,7 +45,7 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
                                 throws HibernateException{
                         List list = session.createSQLQuery(ORDERNUMBER_SQL)
                         .setString("busType", busType)
-                        .setString("codeType", codeType)
+                        .setInteger("snType", snType)
                         .list();
                         if(list.size() > 0){
                                 return ((BigDecimal)list.get(0)).longValue();
@@ -60,16 +59,14 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateMaxIndex(final Long maxIndex,final String busType,final String codeType) {
-//		 final String ORDERNUMBER_SQL = "update BU_NUMBER t set t.maxindex = :maxIndex where t.type = :type";
-		//bug修复：2014.07.08修复跳号问题
+	public void updateMaxIndex(final Long maxIndex,final String busType,final int snType) {
 		String sql="";
-		if("0".equals(codeType)){
-			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.code_type=:codeType";
-		}else if("1".equals(codeType)){
-			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.code_type=:codeType";
-		}else if("2".equals(codeType)){
-			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.code_type=:codeType";
+		if(SnType.date.code==snType){
+			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType";
+		}else if(SnType.number.code==snType){
+			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.sn_type=:snType";
+		}else if(SnType.datenumber.code==snType){
+			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.sn_type=:snType";
 		}
 		 final String ORDERNUMBER_SQL =sql; 
          Long orderNumber = (Long)getHibernateTemplate().execute(new HibernateCallback() {
@@ -78,7 +75,7 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
                          session.createSQLQuery(ORDERNUMBER_SQL)
                          .setLong("maxIndex", maxIndex)
                          .setString("busType", busType)
-                         .setString("codeType", codeType)
+                         .setInteger("snType", snType)
                          .executeUpdate();                
                          return null;
                  }
@@ -89,15 +86,15 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void insertMaxIndex(final String bus_type,final String codeType) {
+	public void insertMaxIndex(final String bus_type,final int codeType) {
 		if (bus_type != null && !("".equals(bus_type))) {
 			String sql = "";
-			if("0".equals(codeType)){
-				sql="insert into sn_number(id,maxindex,bus_type,num_date,code_type) values(S_SN_NUMBER.NEXTVAL,1,?,sysdate,?)";
-			}else if("1".equals(codeType)){
-				sql="insert into sn_number(id,maxindex,bus_type,code_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
-			}else if("2".equals(codeType)){
-				sql="insert into sn_number(id,maxindex,bus_type,code_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
+			if(SnType.date.code==codeType){
+				sql="insert into sn_number(id,maxindex,bus_type,num_date,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,sysdate,?)";
+			}else if(SnType.number.code==codeType){
+				sql="insert into sn_number(id,maxindex,bus_type,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
+			}else if(SnType.datenumber.code==codeType){
+				sql="insert into sn_number(id,maxindex,bus_type,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
 			}
 //			final String ORDERNUMBER_SQL = "insert into bu_number(id,maxindex,type,code_type) values(S_BU_NUMBER.NEXTVAL,1,?,?)";
 			
@@ -111,7 +108,7 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 							session.createSQLQuery(ORDERNUMBER_SQL)
 //							 		.setString("type", type)
 									 .setString(0, bus_type)
-									 .setString(1, codeType)
+									 .setInteger(1, codeType)
 									.executeUpdate();
 							return null;
 						}
