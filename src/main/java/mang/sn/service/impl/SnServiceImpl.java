@@ -94,21 +94,20 @@ public class SnServiceImpl implements SnService {
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW) 
 	public String doGetSn(String prefix, String busType, SnType snType,SnGenerate snGenerate) {
+		Timestamp startTime=new Timestamp(System.currentTimeMillis());
 		logger.info("[生成单号]" + "请求单号开始");
 
 		String code = null;
-		int codeType;
-		
-		codeType=snType.getCode();
+		int snTypeCode=snType.getCode();
 
-		logger.info("[生成单号]前缀:" + prefix + "\t单号生成方式:" + codeType + "\t单号类型:" + busType);
+		logger.info("[生成单号]前缀:" + prefix + "\t单号生成方式:" + snTypeCode+"\t业务类型:" + busType);
 
 		
-		//XXX 这里时间和maxIndex不同步 有可能导致单号错误
+		//XXX 这里时间和maxIndex不同步 有可能导致单号重复
 		
 		// 取最大值
 		Long maxIndex = null;
-		maxIndex = getMaxIndex(busType, codeType);
+		maxIndex = getMaxIndex(busType, snTypeCode);
 		Timestamp time=timeDAO.getOracleTime();
 		
 		//生成单号
@@ -117,10 +116,22 @@ public class SnServiceImpl implements SnService {
 		code=snGenerate.generateSn(prefix, maxIndex, paraMap);
 
 		// 最大值加1
-		snNumberDAO.updateMaxIndex(maxIndex + 1, busType, codeType);
+		snNumberDAO.updateMaxIndex(maxIndex + 1, busType, snTypeCode);
+	
+		Timestamp endTime=new Timestamp(System.currentTimeMillis());
+		String invokeMessage=this.getInvokeInfo();
+		SnNumberLog numberLog = new SnNumberLog();
+		numberLog.setSn(code);
+		numberLog.setPrefix(prefix);
+		numberLog.setBusType(busType);//编号类型
+		numberLog.setSnType(snTypeCode);
+		numberLog.setRundate(startTime);
+		numberLog.setRuntimeEnd(endTime);
+		numberLog.setRuntimeDuration(endTime.getTime()-startTime.getTime());
+		numberLog.setInvokeCode(invokeMessage);
+		snNumberLogDAO.saveOrUpdate(numberLog);
+
 		
-		// 写日志
-		saveNumberLog(prefix, busType, code, codeType); // 写单号生成日志(0表示时间类型 1表示数字类型)
 		logger.info("[生成单号]" + "生成的单号为:" + code);
 		logger.info("[生成单号]" + "请求单号结束");
 		return code;
@@ -136,21 +147,14 @@ public class SnServiceImpl implements SnService {
 		return maxIndex;
 	}
 	
-	private SnNumberLog saveNumberLog(String prefix, String bustype,String sn,Integer snType){
-		SnNumberLog numberLog = new SnNumberLog();
-		numberLog.setSn(sn);
-		numberLog.setPrefix(prefix);
-		numberLog.setBusType(bustype);//编号类型
-		numberLog.setSnType(snType);
-		
+	
+	private String getInvokeInfo(){
 		//获取调用该方法的方法的信息
-		
-		//XXX 取调用方法的代码还不知如何写 因为我希望能通过配置的方式修改取哪个包
-		
+		String message ="";
 		if(invodeCode!=null &&invodeCode.getClassPath()!=null && !"".equals(invodeCode.getClassPath())){
 			String invokeCodePath=invodeCode.getClassPath();
 			
-			String message = "";
+			
 			StringBuffer sb = new StringBuffer();
 			StackTraceElement stack[] = Thread.currentThread().getStackTrace();
 			for (StackTraceElement ste : stack) {
@@ -160,7 +164,6 @@ public class SnServiceImpl implements SnService {
 				if (className.indexOf(invokeCodePath) != -1) {
 					sb.append(className + "." + methodName + ":" + line + "&");
 				}
-				
 			}
 			if(sb.length()>0){
 				int length =sb.length()>800?800:sb.length();
@@ -168,11 +171,8 @@ public class SnServiceImpl implements SnService {
 			}
 			
 			logger.info("[生成单号]调用java类信息:"+message);
-			numberLog.setInvokeCode(message);
 		}
-		return snNumberLogDAO.saveOrUpdate(numberLog);
-		
+		return message;
 	}
-	
 	
 }
