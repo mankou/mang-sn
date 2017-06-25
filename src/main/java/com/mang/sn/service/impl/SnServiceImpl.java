@@ -30,10 +30,10 @@ public class SnServiceImpl implements SnService {
 	private static Logger logger = Logger. getLogger(SnServiceImpl.class);
 	
 	@Autowired
-	private SnNumberDAO buNumberDAO;
+	private SnNumberDAO snNumberDAO;
 	
 	@Autowired
-	private SnNumberLogDAO buNumberLogDAO;
+	private SnNumberLogDAO snNumberLogDAO;
 	
 	@Autowired
 	private TimeDAO timeDAO;
@@ -53,7 +53,7 @@ public class SnServiceImpl implements SnService {
 	}
 	
 	@Override
-	public String doGetCurrentSn(String prefix, String busType, SnType snType,SnGenerate generate) {
+	public String doGetCurrentSn(String prefix, String busType, SnType snType,SnGenerate snGenerate) {
 		String code=null;
 		Long maxIndex=null;
 		
@@ -62,7 +62,7 @@ public class SnServiceImpl implements SnService {
 		//取最大值
 		maxIndex = getMaxIndex(busType, codeType);
 		
-		code=generate.generateSn(prefix, maxIndex, null);
+		code=snGenerate.generateSn(prefix, maxIndex, null);
 		return code;
 	}
 
@@ -71,19 +71,19 @@ public class SnServiceImpl implements SnService {
 		
 		int codeType=snType.getCode();
 
-		Long maxIndex = buNumberDAO.getMaxIndex(busType, codeType);
+		Long maxIndex = snNumberDAO.getMaxIndex(busType, codeType);
 		if(maxIndex==null){
-			buNumberDAO.insertMaxIndex(busType,codeType);
+			snNumberDAO.insertMaxIndex(busType,codeType);
 			maxIndex = 1L;
 		}
 
-		buNumberDAO.updateMaxIndex(maxIndex+1, busType, codeType);
+		snNumberDAO.updateMaxIndex(maxIndex+1, busType, codeType);
 
 	}
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW) 
-	public String doGetSn(String prefix, String busType, SnType snType,SnGenerate generate) {
+	public String doGetSn(String prefix, String busType, SnType snType,SnGenerate snGenerate) {
 		logger.info("[生成单号]" + "请求单号开始");
 
 		String code = null;
@@ -104,10 +104,10 @@ public class SnServiceImpl implements SnService {
 		//生成单号
 		Map<String,Object> paraMap=new HashMap<String,Object>();
 		paraMap.put("dbTime", time);
-		code=generate.generateSn(prefix, maxIndex, paraMap);
+		code=snGenerate.generateSn(prefix, maxIndex, paraMap);
 
 		// 最大值加1
-		buNumberDAO.updateMaxIndex(maxIndex + 1, busType, codeType);
+		snNumberDAO.updateMaxIndex(maxIndex + 1, busType, codeType);
 		
 		// 写日志
 		saveNumberLog(prefix, busType, code, codeType); // 写单号生成日志(0表示时间类型 1表示数字类型)
@@ -117,29 +117,26 @@ public class SnServiceImpl implements SnService {
 	}
 		
 	private Long getMaxIndex(String busType,int codeType) {
-		Long maxIndex=buNumberDAO.getMaxIndex(busType,codeType);
+		Long maxIndex=snNumberDAO.getMaxIndex(busType,codeType);
 		if(maxIndex==null){
 			//说明没有,先建一新的
-			buNumberDAO.insertMaxIndex(busType,codeType);
+			snNumberDAO.insertMaxIndex(busType,codeType);
 			maxIndex=1L;
 		}
 		return maxIndex;
 	}
-	
-	
-	
 	
 	private SnNumberLog saveNumberLog(String prefix, String bustype,String sn,Integer snType){
 		SnNumberLog numberLog = new SnNumberLog();
 		numberLog.setSn(sn);
 		numberLog.setPrefix(prefix);
 		numberLog.setBusType(bustype);//编号类型
-//		numberLog.setRuid(logBO.getCurrentUserCode());
-//		numberLog.setRuname(logBO.getCurrentUserName());
-//		numberLog.setRundate(TimeUtil.getCurrentTime());
 		numberLog.setSnType(snType);
 		
 		//获取调用该方法的方法的信息
+		
+		//XXX 取调用方法的代码还不知如何写 因为我希望能通过配置的方式修改取哪个包
+		
 		String message = "";
 		StringBuffer sb = new StringBuffer();
 		StackTraceElement stack[] = Thread.currentThread().getStackTrace();
@@ -159,7 +156,7 @@ public class SnServiceImpl implements SnService {
 		
 		logger.info("[生成单号]调用java类信息:"+message);
 		numberLog.setInvokeCode(message);
-		return buNumberLogDAO.saveOrUpdate(numberLog);
+		return snNumberLogDAO.saveOrUpdate(numberLog);
 		
 	}
 	
