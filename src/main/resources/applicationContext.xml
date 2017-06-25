@@ -18,7 +18,7 @@
 
 	<!--自动装配DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter -->
 	
-	<context:component-scan base-package="com.mang.sn"/>
+	<context:component-scan base-package="mang.sn"/>
 
 	<!-- 扫描路由路径 -->
 
@@ -41,7 +41,7 @@
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan">  
-            <value>com.mang.sn.entity</value>  
+            <value>mang.sn.entity</value>  
         </property>  
 		<property name="hibernateProperties">
 			<props>
@@ -67,8 +67,8 @@
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 	
 	  
-	<bean id="sn-invokeCode" class="com.mang.sn.tools.InvokeCode">
-		<property name="classPath" value="com.mang.sn" />
+	<bean id="sn-invokeCode" class="mang.sn.tools.InvokeCode">
+		<property name="classPath" value="mang.sn" />
 	</bean>
 	
 </beans>

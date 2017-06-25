@@ -1,7 +1,7 @@
-package com.mang.sn.service;
+package mang.sn.service;
 
-import com.mang.sn.generate.SnGenerate;
-import com.mang.sn.tools.SnType;
+import mang.sn.generate.SnGenerate;
+import mang.sn.tools.SnType;
 
 /**
  * 单号生成

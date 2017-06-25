@@ -1,14 +1,13 @@
-package com.mang.sn.service.impl;
+package mang.sn.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mang.sn.entity.SnNumberLog;
-import com.mang.sn.service.SnService;
-import com.mang.sn.service.TestSnService;
-
-import com.mang.sn.dao.SnNumberLogDAO;
+import mang.sn.dao.SnNumberLogDAO;
+import mang.sn.entity.SnNumberLog;
+import mang.sn.service.SnService;
+import mang.sn.service.TestSnService;
 
 @Service
 @Transactional

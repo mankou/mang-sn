@@ -1,4 +1,4 @@
-package com.mang.sn.entity;
+package mang.sn.entity;
 
 
 import java.io.Serializable;

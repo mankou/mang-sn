@@ -1,4 +1,4 @@
-package com.mang.sn.generate;
+package mang.sn.generate;
 
 import java.util.Map;
 

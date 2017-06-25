@@ -1,6 +1,6 @@
-package com.mang.sn.dao;
+package mang.sn.dao;
 
-import com.mang.sn.entity.SnNumber;
+import mang.sn.entity.SnNumber;
 
 public interface SnNumberDAO extends BaseDAO<SnNumber> {
 

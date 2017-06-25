@@ -1,4 +1,4 @@
-package com.mang.sn.generate;
+package mang.sn.generate;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;

@@ -1,4 +1,4 @@
-package com.mang.sn.dao.impl;
+package mang.sn.dao.impl;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
-import com.mang.sn.dao.BaseDAO;
+import mang.sn.dao.BaseDAO;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class BaseDAOImpl<T> extends HibernateDaoSupport implements BaseDAO<T> {

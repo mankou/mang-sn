@@ -1,4 +1,4 @@
-package com.mang.sn.tools;
+package mang.sn.tools;
 
 public class InvokeCode {
 	private String classPath;

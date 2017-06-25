@@ -1,10 +1,9 @@
-package com.mang.sn.dao.impl;
+package mang.sn.dao.impl;
 
 import org.springframework.stereotype.Repository;
 
-import com.mang.sn.entity.SnNumberLog;
-
-import com.mang.sn.dao.SnNumberLogDAO;
+import mang.sn.dao.SnNumberLogDAO;
+import mang.sn.entity.SnNumberLog;
 
 @Repository
 public class SnNumberLogDAOImpl  extends BaseDAOImpl<SnNumberLog>  implements SnNumberLogDAO {

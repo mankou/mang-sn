@@ -1,4 +1,4 @@
-package com.mang.sn.service.impl;
+package mang.sn.service.impl;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -16,15 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.mang.sn.entity.SnNumberLog;
-import com.mang.sn.generate.DayDateGenerate;
-import com.mang.sn.generate.SnGenerate;
-import com.mang.sn.service.SnService;
-import com.mang.sn.tools.InvokeCode;
-import com.mang.sn.tools.SnType;
-import com.mang.sn.dao.SnNumberLogDAO;
-import com.mang.sn.dao.TimeDAO;
-import com.mang.sn.dao.SnNumberDAO;
+import mang.sn.dao.SnNumberDAO;
+import mang.sn.dao.SnNumberLogDAO;
+import mang.sn.dao.TimeDAO;
+import mang.sn.entity.SnNumberLog;
+import mang.sn.generate.DayDateGenerate;
+import mang.sn.generate.SnGenerate;
+import mang.sn.service.SnService;
+import mang.sn.tools.InvokeCode;
+import mang.sn.tools.SnType;
 
 @Service
 @Transactional

@@ -1,10 +1,11 @@
-package com.mang.sn;
+
+package mang.sn;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import com.mang.sn.service.TestSnService;
+import mang.sn.service.TestSnService;
 
 /**
  * Hello world!
