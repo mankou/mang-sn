@@ -22,7 +22,7 @@ public interface SnService {
 	 * @param prefix:单号前缀
 	 * @param busType:业务类型 用于区分不同的业务 以满足不同的业务类型走不同的单号计数
 	 * @param snType:单号生成方式 
-	 * @param snGenerate 用于生成具体的单号 需实现SnGenerate接口
+	 * @param snGenerate 用于生成具体的单号 是一个接口 具体调用时传入具体的实现类
 	 * */
 	public String doGetSn(String prefix,String busType,SnType snType,SnGenerate snGenerate);
 	
@@ -41,7 +41,7 @@ public interface SnService {
 	 * @param prefix:编号前缀
 	 * @param busType:业务类型
 	 * @param syType: 单号生成方式
-	 * @param snGenerate 用于生成具体的单号 需实现SnGenerate接口
+	 * @param snGenerate 用于生成具体的单号 是一个接口 具体调用时传入具体的实现类
 	 * */
 	public String getCurrentSn(String prefix, String busType, SnType syType,SnGenerate snGenerate);
 	
