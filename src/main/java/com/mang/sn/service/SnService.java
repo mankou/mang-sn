@@ -32,7 +32,7 @@ public interface SnService {
 	 * 因历史原因该方法保留,但其是专门产生时间类型单号的方法。
 	 * 以后尽量采用下面的方法
 	 * */
-	public String doGetCurrentSn(String prefix,String type);
+	public String getCurrentSn(String prefix,String type);
 	
 
 	/**
@@ -42,7 +42,7 @@ public interface SnService {
 	 * @param syType: 单号生成方式
 	 * @param snGenerate 用于生成具体的单号 需实现SnGenerate接口
 	 * */
-	public String doGetCurrentSn(String prefix, String busType, SnType syType,SnGenerate snGenerate);
+	public String getCurrentSn(String prefix, String busType, SnType syType,SnGenerate snGenerate);
 	
 	/**
 	 * 单号maxindex加1

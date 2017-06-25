@@ -40,6 +40,8 @@ public class SnServiceImpl implements SnService {
 	
 
 
+	//走单独事务 
+	//原因：如果人调用者走一个事务 如果调用者的事务一直不结束 你就不能提交 则别人再调该方法就阻塞了
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public String doGetDateSn(String prefix, String type) {
@@ -48,12 +50,12 @@ public class SnServiceImpl implements SnService {
 	}
 
 	@Override
-	public String doGetCurrentSn(String prefix, String type) {
-		return doGetCurrentSn(prefix, type, SnType.date, null);
+	public String getCurrentSn(String prefix, String type) {
+		return getCurrentSn(prefix, type, SnType.date, null);
 	}
 	
 	@Override
-	public String doGetCurrentSn(String prefix, String busType, SnType snType,SnGenerate snGenerate) {
+	public String getCurrentSn(String prefix, String busType, SnType snType,SnGenerate snGenerate) {
 		String code=null;
 		Long maxIndex=null;
 		
