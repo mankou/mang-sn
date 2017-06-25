@@ -3,6 +3,8 @@ package com.mang.sn.service.impl;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.persistence.SynchronizationType;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mang.sn.entity.SnNumberLog;
+import com.mang.sn.generate.DateGenerate;
+import com.mang.sn.generate.SnGenerate;
 import com.mang.sn.service.SnService;
 import com.mang.sn.tools.SnType;
 import com.mang.sn.dao.SnNumberLogDAO;
@@ -39,7 +43,7 @@ public class SnServiceImpl implements SnService {
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public String doGetDateSn(String prefix, String type) {
-		String code = doGetSn(prefix, type, SnType.date, "null");
+		String code = doGetSn(prefix, type, SnType.date, new DateGenerate());
 		return code;
 	}
 
@@ -49,7 +53,7 @@ public class SnServiceImpl implements SnService {
 	}
 	
 	@Override
-	public String doGetCurrentSn(String prefix, String busType, SnType snType,String precision) {
+	public String doGetCurrentSn(String prefix, String busType, SnType snType,SnGenerate generate) {
 		String code=null;
 		Long maxIndex=null;
 		
@@ -58,16 +62,7 @@ public class SnServiceImpl implements SnService {
 		//取最大值
 		maxIndex = getMaxIndex(busType, codeType);
 		
-		//生成单号
-		if(snType==SnType.date){
-			code= generateCode_Date(prefix, maxIndex);
-		}
-		if(snType==SnType.number){
-			code=generateCode_Number(prefix,precision,maxIndex);
-		}
-		if(snType==SnType.datenumber){
-			code=generateCode_DateNumber(prefix,maxIndex);
-		}
+		code=generate.generateSn(prefix, maxIndex, null);
 		return code;
 	}
 
@@ -88,7 +83,7 @@ public class SnServiceImpl implements SnService {
 
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW) 
-	public String doGetSn(String prefix, String busType, SnType snType, String precision) {
+	public String doGetSn(String prefix, String busType, SnType snType,SnGenerate generate) {
 		logger.info("[生成单号]" + "请求单号开始");
 
 		String code = null;
@@ -98,23 +93,21 @@ public class SnServiceImpl implements SnService {
 
 		logger.info("[生成单号]前缀:" + prefix + "\t单号生成方式:" + codeType + "\t单号类型:" + busType);
 
+		
+		//XXX 这里时间和maxIndex不同步 有可能导致单号错误
+		
 		// 取最大值
 		Long maxIndex = null;
 		maxIndex = getMaxIndex(busType, codeType);
-		
+		Timestamp time=timeDAO.getOracleTime();
 		
 		//生成单号
-		if (snType==SnType.date) {
-			code = generateCode_Date(prefix, maxIndex);
-		} else if (snType==SnType.number) {
-			code = generateCode_Number(prefix, precision, maxIndex);
-		} else if (snType==SnType.datenumber) {
-			code = generateCode_DateNumber(prefix, maxIndex);
-		}
+		Map<String,Object> paraMap=new HashMap<String,Object>();
+		paraMap.put("dbTime", time);
+		code=generate.generateSn(prefix, maxIndex, paraMap);
 
 		// 最大值加1
 		buNumberDAO.updateMaxIndex(maxIndex + 1, busType, codeType);
-
 		
 		// 写日志
 		saveNumberLog(prefix, busType, code, codeType); // 写单号生成日志(0表示时间类型 1表示数字类型)
@@ -133,54 +126,8 @@ public class SnServiceImpl implements SnService {
 		return maxIndex;
 	}
 	
-	private String generateCode_Number(String prefix,String precision,Long maxIndex) {
-		// 如果前缀为空则用""代替
-		if (prefix == null) {
-			prefix = "";
-		}
-
-		// 如果不输入默认是8位数字
-		if (precision == null || "".equals(precision)) {
-			precision = "8";
-		}
-
-		String orderNumber;
-		if ("-1".equals(precision)) {
-			orderNumber = prefix + maxIndex;
-		} else {
-			DecimalFormat dfInt = new DecimalFormat("00");
-			precision = dfInt.format(Integer.valueOf(precision));
-
-			String format = "%" + precision + "d";
-			orderNumber = prefix + String.format(format, maxIndex);
-		}
-
-		return orderNumber;
-	}
 	
-	private String generateCode_Date(String prefix,Long maxIndex){
-		String code = null;
-		// 获得当前时间
-		SimpleDateFormat   formatter   =   new   SimpleDateFormat   ("yyyyMMdd"); 
-		formatter.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-		
-		Timestamp time=timeDAO.getOracleTime();
-		String   dateNum   =   formatter.format(time);  
-		code = prefix+dateNum+"-"+maxIndex;
-		return code;
-	}
 	
-	private String generateCode_DateNumber(String prefix,Long maxIndex){
-		
-		String code = null;
-		// 获得当前时间
-		SimpleDateFormat   formatter   =   new   SimpleDateFormat   ("yyyyMMdd"); 
-		Timestamp time=new Timestamp(System.currentTimeMillis());
-		String   dateNum   =   formatter.format(time); 
-		code = prefix+dateNum+"-"+maxIndex;
-				
-		return code;
-	}
 	
 	private SnNumberLog saveNumberLog(String prefix, String bustype,String sn,Integer snType){
 		SnNumberLog numberLog = new SnNumberLog();

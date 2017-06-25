@@ -1,5 +1,6 @@
 package com.mang.sn.service;
 
+import com.mang.sn.generate.SnGenerate;
 import com.mang.sn.tools.SnType;
 
 /**
@@ -23,7 +24,7 @@ public interface SnService {
 	 * @param snType:单号类型.
 	 * @param precision:精度 
 	 * */
-	public String doGetSn(String prefix,String type,SnType snType,String precision);
+	public String doGetSn(String prefix,String type,SnType snType,SnGenerate generate);
 	
 	
 	/**
@@ -43,7 +44,7 @@ public interface SnService {
 	 * @param precision:精度。
 	 * <p>当option类型为number时,该字段有效。如为8 则单号长度为8(不包括前缀)</p>
 	 * */
-	public String doGetCurrentSn(String prefix, String busType, SnType syType,String precision);
+	public String doGetCurrentSn(String prefix, String busType, SnType syType,SnGenerate generate);
 	
 	/**
 	 * 单号maxindex加1
