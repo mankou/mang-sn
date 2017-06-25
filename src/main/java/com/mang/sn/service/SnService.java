@@ -15,7 +15,7 @@ public interface SnService {
 	 * @param prefix 单号前缀
 	 * @param busType 业务类型 用于区分不同的业务 以满足不同的业务类型走不同的单号计数
 	 * */
-	public String doGetDateSn(String prefix,String busType);
+	public String doGetDayDateSn(String prefix,String busType);
 	
 	/**
 	 * 生成单号
@@ -29,10 +29,11 @@ public interface SnService {
 	
 	/**
 	 * 专门获取时间类型单号的,但maxIndex不加1
-	 * 因历史原因该方法保留,但其是专门产生时间类型单号的方法。
-	 * 以后尽量采用下面的方法
+	 * 
+	 * @param prefix 前缀
+	 * @param busType 业务类型
 	 * */
-	public String getCurrentSn(String prefix,String type);
+	public String getCurrentDayDateSn(String prefix,String busType);
 	
 
 	/**

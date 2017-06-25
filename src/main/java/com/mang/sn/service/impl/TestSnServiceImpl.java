@@ -26,7 +26,7 @@ public class TestSnServiceImpl implements TestSnService {
 		snLog1.setRunMemo("取单号前");
 		snNumberLogDAO.save(snLog1);
 		
-		String sn=snService.doGetDateSn("QC", "Test");
+		String sn=snService.doGetDayDateSn("QC", "Test");
 		System.out.println(sn);
 		
 		SnNumberLog snLog2=new SnNumberLog();
