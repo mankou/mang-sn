@@ -13,12 +13,9 @@ public class DateGenerate implements SnGenerate {
 		// 获得当前时间
 		SimpleDateFormat   formatter   =   new   SimpleDateFormat   ("yyyyMMdd"); 
 		formatter.setTimeZone(TimeZone.getTimeZone("GMT+8"));
-		
 		Timestamp time=(Timestamp) map.get("dbTime");
 		
 		String   dateNum   =   formatter.format(time);  
-		
-		
 		code = prefix+dateNum+"-"+maxIndex;
 		return code;
 	}
