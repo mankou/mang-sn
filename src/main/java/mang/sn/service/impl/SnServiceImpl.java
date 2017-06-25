@@ -125,6 +125,7 @@ public class SnServiceImpl implements SnService {
 		numberLog.setPrefix(prefix);
 		numberLog.setBusType(busType);//编号类型
 		numberLog.setSnType(snTypeCode);
+		numberLog.setRuntimeStart(startTime);
 		numberLog.setRundate(startTime);
 		numberLog.setRuntimeEnd(endTime);
 		numberLog.setRuntimeDuration(endTime.getTime()-startTime.getTime());
