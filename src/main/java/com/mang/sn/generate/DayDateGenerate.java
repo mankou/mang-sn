@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class DateGenerate implements SnGenerate {
+public class DayDateGenerate implements SnGenerate {
 
 	@Override
 	public String generateSn(String prefix,Long maxIndex,Map<String,Object> map) {

@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.mang.sn.entity.SnNumberLog;
-import com.mang.sn.generate.DateGenerate;
+import com.mang.sn.generate.DayDateGenerate;
 import com.mang.sn.generate.SnGenerate;
 import com.mang.sn.service.SnService;
 import com.mang.sn.tools.InvokeCode;
@@ -53,13 +53,13 @@ public class SnServiceImpl implements SnService {
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public String doGetDateSn(String prefix, String type) {
-		String code = doGetSn(prefix, type, SnType.date, new DateGenerate());
+		String code = doGetSn(prefix, type, SnType.dayDate, new DayDateGenerate());
 		return code;
 	}
 
 	@Override
 	public String getCurrentSn(String prefix, String type) {
-		return getCurrentSn(prefix, type, SnType.date, null);
+		return getCurrentSn(prefix, type, SnType.dayDate, null);
 	}
 	
 	@Override

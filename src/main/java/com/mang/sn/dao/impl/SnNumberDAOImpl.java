@@ -29,16 +29,13 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 	@Override
 	public Long getMaxIndex(final String busType,final int snType) {
 		
-		
-		//bug修复：2014.07.08修复跳号问题
 		String sql="";
-		if(SnType.date.code==snType){
+		if(SnType.dayDate.code==snType){
 			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType for update";
 		}else if(SnType.number.code==snType){
 			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.sn_type=:snType for update";
-		}else if(SnType.datenumber.code==snType){
-			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.sn_type=:snType for update";
 		}
+		
 		 final String ORDERNUMBER_SQL =sql;
         Long orderNumber = (Long)getHibernateTemplate().execute(new HibernateCallback() {
                 public Object doInHibernate(Session session)
@@ -61,14 +58,13 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 	@Override
 	public void updateMaxIndex(final Long maxIndex,final String busType,final int snType) {
 		String sql="";
-		if(SnType.date.code==snType){
+		if(SnType.dayDate.code==snType){
 			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType";
 		}else if(SnType.number.code==snType){
 			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.sn_type=:snType";
-		}else if(SnType.datenumber.code==snType){
-			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.sn_type=:snType";
 		}
-		 final String ORDERNUMBER_SQL =sql; 
+		
+		final String ORDERNUMBER_SQL =sql; 
          Long orderNumber = (Long)getHibernateTemplate().execute(new HibernateCallback() {
                  public Object doInHibernate(Session session)
                                  throws HibernateException {
@@ -89,14 +85,11 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 	public void insertMaxIndex(final String bus_type,final int codeType) {
 		if (bus_type != null && !("".equals(bus_type))) {
 			String sql = "";
-			if(SnType.date.code==codeType){
+			if(SnType.dayDate.code==codeType){
 				sql="insert into sn_number(id,maxindex,bus_type,num_date,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,sysdate,?)";
 			}else if(SnType.number.code==codeType){
 				sql="insert into sn_number(id,maxindex,bus_type,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
-			}else if(SnType.datenumber.code==codeType){
-				sql="insert into sn_number(id,maxindex,bus_type,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
 			}
-//			final String ORDERNUMBER_SQL = "insert into bu_number(id,maxindex,type,code_type) values(S_BU_NUMBER.NEXTVAL,1,?,?)";
 			
 			final String ORDERNUMBER_SQL = sql;
 			logger.debug("生成的sql为"+ORDERNUMBER_SQL);
@@ -106,7 +99,6 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 						public Object doInHibernate(Session session)
 								throws HibernateException {
 							session.createSQLQuery(ORDERNUMBER_SQL)
-//							 		.setString("type", type)
 									 .setString(0, bus_type)
 									 .setInteger(1, codeType)
 									.executeUpdate();
