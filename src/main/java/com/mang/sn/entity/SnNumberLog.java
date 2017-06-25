@@ -1,4 +1,4 @@
-package mang.no.entity;
+package com.mang.sn.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

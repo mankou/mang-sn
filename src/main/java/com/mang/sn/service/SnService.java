@@ -1,6 +1,6 @@
-package mang.no.service;
+package com.mang.sn.service;
 
-public interface SerialNumberService {
+public interface SnService {
 	/**
 	 * descirption:生成时间类型单号
 	 * 因历史原因该方法保留,但其是专门产生时间类型单号的方法。

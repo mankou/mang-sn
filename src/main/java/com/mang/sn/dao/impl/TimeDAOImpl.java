@@ -1,4 +1,4 @@
-package mang.no.dao.impl;
+package com.mang.sn.dao.impl;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.hibernate.transform.Transformers;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import mang.no.dao.TimeDAO;
+import com.mang.sn.dao.TimeDAO;
 
 @Repository
 public class TimeDAOImpl extends BaseDAOImpl implements TimeDAO {

@@ -1,10 +1,10 @@
-package mang.no;
+package com.mang.sn;
 
 import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import mang.no.service.TestService;
+import com.mang.sn.service.TestService;
 
 /**
  * Hello world!

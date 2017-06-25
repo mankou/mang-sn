@@ -1,4 +1,4 @@
-package mang.no.service.impl;
+package com.mang.sn.service.impl;
 
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -11,16 +11,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import mang.no.dao.SnNumberLogDAO;
-import mang.no.dao.TimeDAO;
-import mang.no.dao.SnNumberDAO;
-import mang.no.entity.SnNumberLog;
-import mang.no.service.SerialNumberService;
+import com.mang.sn.entity.SnNumberLog;
+import com.mang.sn.service.SnService;
+
+import com.mang.sn.dao.SnNumberLogDAO;
+import com.mang.sn.dao.TimeDAO;
+import com.mang.sn.dao.SnNumberDAO;
 
 @Service
 @Transactional
-public class SerialNumberServiceImpl implements SerialNumberService {
-	private static Logger logger = Logger. getLogger(SerialNumberServiceImpl.class);
+public class SnServiceImpl implements SnService {
+	private static Logger logger = Logger. getLogger(SnServiceImpl.class);
 	
 	@Autowired
 	private SnNumberDAO buNumberDAO;

@@ -1,20 +1,21 @@
-package mang.no.service.impl;
+package com.mang.sn.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import mang.no.dao.SnNumberLogDAO;
-import mang.no.entity.SnNumberLog;
-import mang.no.service.SerialNumberService;
-import mang.no.service.TestService;
+import com.mang.sn.entity.SnNumberLog;
+import com.mang.sn.service.SnService;
+import com.mang.sn.service.TestService;
+
+import com.mang.sn.dao.SnNumberLogDAO;
 
 @Service
 @Transactional
 public class TestServiceImpl implements TestService {
 	
 	@Autowired
-	private SerialNumberService serialNumberService;
+	private SnService snService;
 	
 	@Autowired
 	private SnNumberLogDAO snNumberLogDAO;
@@ -25,7 +26,7 @@ public class TestServiceImpl implements TestService {
 		snLog1.setRunMemo("取单号前");
 		snNumberLogDAO.save(snLog1);
 		
-		String sn=serialNumberService.doGetDateSn("QC", "Test");
+		String sn=snService.doGetDateSn("QC", "Test");
 		
 		SnNumberLog snLog2=new SnNumberLog();
 		snLog2.setRunMemo("取单号后");

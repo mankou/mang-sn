@@ -1,4 +1,4 @@
-package mang.no.dao.impl;
+package com.mang.sn.dao.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -9,8 +9,9 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import mang.no.dao.SnNumberDAO;
-import mang.no.entity.SnNumber;
+import com.mang.sn.entity.SnNumber;
+
+import com.mang.sn.dao.SnNumberDAO;
 
 @Repository
 public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberDAO {

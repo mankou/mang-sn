@@ -1,4 +1,4 @@
-package mang.no.dao;
+package com.mang.sn.dao;
 
 import java.sql.Timestamp;
 

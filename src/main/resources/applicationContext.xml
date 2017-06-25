@@ -18,7 +18,7 @@
 
 	<!--自动装配DefaultAnnotationHandlerMapping和AnnotationMethodHandlerAdapter -->
 	
-	<context:component-scan base-package="mang.no"/>
+	<context:component-scan base-package="com.mang.sn"/>
 
 	<!-- 扫描路由路径 -->
 
@@ -41,7 +41,7 @@
 		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />
 		<property name="packagesToScan">  
-            <value>mang.no.entity</value>  
+            <value>com.mang.sn.entity</value>  
         </property>  
 		<property name="hibernateProperties">
 			<props>
