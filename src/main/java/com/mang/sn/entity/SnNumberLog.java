@@ -27,7 +27,7 @@ public class SnNumberLog implements Serializable {
     @Id
    	@Column(name = "id", nullable = true)
     @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-    @SequenceGenerator(name="seq", sequenceName="s_bu_number_log")
+    @SequenceGenerator(name="seq", sequenceName="S_SN_NUMBER_LOG")
     private Long id;
 
     /**

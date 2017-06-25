@@ -1,4 +1,4 @@
-package mang.no;
+package com.mang.sn;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
