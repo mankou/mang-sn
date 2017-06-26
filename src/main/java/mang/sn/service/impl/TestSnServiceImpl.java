@@ -8,6 +8,7 @@ import mang.sn.dao.SnNumberLogDAO;
 import mang.sn.entity.SnNumberLog;
 import mang.sn.service.SnService;
 import mang.sn.service.TestSnService;
+import mang.sn.tools.SnType;
 
 @Service
 @Transactional
@@ -33,6 +34,24 @@ public class TestSnServiceImpl implements TestSnService {
 		snNumberLogDAO.save(snLog2);
 		
 		
+	}
+
+	@Override
+	public void testYearSn() {
+		String sn=snService.doGetSn("QC", "test", SnType.yearDate, null);
+		System.out.println(sn);
+	}
+
+	@Override
+	public void testWeekSn() {
+		String sn=snService.doGetSn("QC", "test", SnType.weekDate, null);
+		System.out.println(sn);
+	}
+
+	@Override
+	public void testMonthSn() {
+		String sn=snService.doGetSn("QC", "test", SnType.monthDate, null);
+		System.out.println(sn);
 	}
 
 }

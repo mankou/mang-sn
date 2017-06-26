@@ -121,6 +121,12 @@ public class SnServiceImpl implements SnService {
 		paraMap.put("dbTimeStr_Day", dbTimeStr_Day);
 		paraMap.put("dbTimeStr_Year", dbTimeStr_Year);
 		
+		
+		if(snGenerate==null){
+			logger.info("[生成单号]生成类snGenerate为空 这里采用默认的生成类");
+			snGenerate=new DayDateGenerate();
+		}
+		
 		code=snGenerate.generateSn(prefix, maxIndex, paraMap);
 
 		// 最大值加1
@@ -147,6 +153,7 @@ public class SnServiceImpl implements SnService {
 	}
 		
 	private Long getMaxIndex(String busType,int codeType) {
+		//XXX 这块有可能重 必须保证同一时间只能有一个调用能进来
 		Long maxIndex=snNumberDAO.getMaxIndex(busType,codeType);
 		if(maxIndex==null){
 			//说明没有,先建一新的

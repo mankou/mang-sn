@@ -23,7 +23,12 @@ public class App
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         
         TestSnService service=ctx.getBean(TestSnService.class);
-        service.testTransaction();
+//        service.testTransaction();
+//        service.testYearSn();
+        service.testMonthSn();
+//        service.testWeekSn();
+        
+        
         
         System.out.println("hah");
 
