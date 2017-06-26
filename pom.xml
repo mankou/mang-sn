@@ -4,7 +4,7 @@
 
 	<groupId>mang.sn</groupId>
 	<artifactId>mang-sn</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>JDK1.6-0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>mang-sn</name>
@@ -12,8 +12,9 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.target>1.6</maven.compiler.target>
+		<jdk.version>1.6</jdk.version>
 		<log4j.version>1.2.17</log4j.version>
 		<spring.version>4.3.8.RELEASE</spring.version>
 		<hibernate.version>4.3.10.Final</hibernate.version>
@@ -82,6 +83,18 @@
 
 	<build>
 		<plugins>
+		<!-- 编译 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.6.1</version>
+				<configuration>
+					<!-- put your configurations here -->
+					<source>${jdk.version}</source>
+					<target>${jdk.version}</target>
+				</configuration>
+			</plugin>
+
 
 			<!-- 打源码包 -->
 			<plugin>

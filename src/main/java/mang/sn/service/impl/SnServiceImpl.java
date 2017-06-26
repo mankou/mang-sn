@@ -25,6 +25,7 @@ import mang.sn.generate.SnGenerate;
 import mang.sn.service.SnService;
 import mang.sn.tools.InvokeCode;
 import mang.sn.tools.SnType;
+import mang.sn.util.TimestampUtil;
 
 @Service
 @Transactional
@@ -109,10 +110,15 @@ public class SnServiceImpl implements SnService {
 		Long maxIndex = null;
 		maxIndex = getMaxIndex(busType, snTypeCode);
 		Timestamp time=timeDAO.getOracleTime();
+		String dbTimeStr_Day=TimestampUtil.getDateString(time, "yyyyMMddHH");
+		String dbTimeStr_Year=TimestampUtil.getDateString(time, "yyyy");
 		
 		//生成单号
 		Map<String,Object> paraMap=new HashMap<String,Object>();
 		paraMap.put("dbTime", time);
+		paraMap.put("dbTimeStr_Day", dbTimeStr_Day);
+		paraMap.put("dbTimeStr_Year", dbTimeStr_Year);
+		
 		code=snGenerate.generateSn(prefix, maxIndex, paraMap);
 
 		// 最大值加1
