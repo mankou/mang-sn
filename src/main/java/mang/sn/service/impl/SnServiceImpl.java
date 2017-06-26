@@ -110,12 +110,14 @@ public class SnServiceImpl implements SnService {
 		Long maxIndex = null;
 		maxIndex = getMaxIndex(busType, snTypeCode);
 		Timestamp time=timeDAO.getOracleTime();
-		String dbTimeStr_Day=TimestampUtil.getDateString(time, "yyyyMMddHH");
+		String dbTimeStr_Hour=TimestampUtil.getDateString(time, "yyyyMMddHH");
+		String dbTimeStr_Day=TimestampUtil.getDateString(time, "yyyyMMdd");
 		String dbTimeStr_Year=TimestampUtil.getDateString(time, "yyyy");
 		
 		//生成单号
 		Map<String,Object> paraMap=new HashMap<String,Object>();
 		paraMap.put("dbTime", time);
+		paraMap.put("dbTimeStr_Hour", dbTimeStr_Hour);
 		paraMap.put("dbTimeStr_Day", dbTimeStr_Day);
 		paraMap.put("dbTimeStr_Year", dbTimeStr_Year);
 		
