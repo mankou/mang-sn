@@ -18,7 +18,7 @@ comment on column SN_NUMBER.bus_type
 comment on column SN_NUMBER.num_date
   is '当前日期(只用于code_type=0的情况)';
 comment on column SN_NUMBER.sn_type
-  is '单号类型0时间类型 Z20150616-2 数字每天从1开始  1数字类型T00000001 数字累加 2时间数字类型 Z20150616-2 但数字是累加的';
+  is '单号计数类型0每天从1开始 1计数一直累加不清零 2计数每周从1开始 3计数每月从1开始 4计数每年从1开始';
 alter table SN_NUMBER
   add constraint PK_SN_NUMBER primary key (ID);
 
