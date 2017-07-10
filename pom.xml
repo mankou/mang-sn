@@ -4,7 +4,7 @@
 
 	<groupId>mang.sn</groupId>
 	<artifactId>mang-sn</artifactId>
-	<version>JDK1.6-0.0.1-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT-JDK1.6</version>
 	<packaging>jar</packaging>
 
 	<name>mang-sn</name>
