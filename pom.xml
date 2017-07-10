@@ -172,6 +172,18 @@
 				</executions>
 			</plugin>
 		</plugins>
-
 	</build>
+	
+	<distributionManagement>
+		<repository>
+			<id>deployment-release</id>
+			<name>deployment-release</name>
+			<url>http://10.4.122.106:7081/repository/common-repo-releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>deployment-snapshot</id>
+			<name>deployment-snapshot</name>
+			<url>http://10.4.122.106:7081/repository/common-repo-snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
