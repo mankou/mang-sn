@@ -7,10 +7,10 @@ import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -22,9 +22,9 @@ public class SnNumber implements Serializable {
     
     @Id
    	@Column(name = "id", nullable = true)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-    @SequenceGenerator(name="seq", sequenceName="s_bu_number")
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    private String id;
     
     /**
      * 单号类型0时间类型 1数字类型
@@ -51,15 +51,16 @@ public class SnNumber implements Serializable {
     @Column(name = "NUM_DATE", nullable = true)   
     private Date numDate;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    
+    public String getId() {
+		return id;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public void setMaxindex(int maxindex) {
+	public void setMaxindex(int maxindex) {
         this.maxindex = maxindex;
     }
 

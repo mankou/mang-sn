@@ -6,13 +6,12 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -26,9 +25,9 @@ public class SnNumberLog implements Serializable {
     
     @Id
    	@Column(name = "id", nullable = true)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
-    @SequenceGenerator(name="seq", sequenceName="S_SN_NUMBER_LOG")
-    private Long id;
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    private String id;
 
     /**
      * 单号
@@ -111,12 +110,17 @@ public class SnNumberLog implements Serializable {
     @Column(name = "RUNTIME_END", nullable = true) 
     private Timestamp runtimeEnd;
 
-	public Long getId() {
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
+	}
+
+	public void setSnType(Integer snType) {
+		this.snType = snType;
 	}
 
 	public String getSn() {

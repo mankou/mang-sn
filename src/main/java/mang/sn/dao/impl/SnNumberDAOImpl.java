@@ -3,18 +3,16 @@ package mang.sn.dao.impl;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.SynchronizationType;
-
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.sql.CaseFragment;
 import org.springframework.orm.hibernate4.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
 import mang.sn.dao.SnNumberDAO;
 import mang.sn.entity.SnNumber;
 import mang.sn.tools.SnType;
+import mang.sn.util.UUIDUtil;
 
 @Repository
 public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberDAO {
@@ -129,10 +127,10 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 			case weekDate: 
 			case monthDate: 
 			case yearDate:
-				sql="insert into sn_number(id,maxindex,bus_type,num_date,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,sysdate,?)";
+				sql="insert into sn_number(id,maxindex,bus_type,num_date,sn_type) values(?,1,?,sysdate,?)";
 				break;
 			case number:
-				sql="insert into sn_number(id,maxindex,bus_type,sn_type) values(S_SN_NUMBER.NEXTVAL,1,?,?)";
+				sql="insert into sn_number(id,maxindex,bus_type,sn_type) values(?,1,?,?)";
 				break;
 			default:
 				break;
@@ -146,8 +144,9 @@ public class SnNumberDAOImpl  extends BaseDAOImpl<SnNumber> implements SnNumberD
 						public Object doInHibernate(Session session)
 								throws HibernateException {
 							session.createSQLQuery(ORDERNUMBER_SQL)
-									 .setString(0, bus_type)
-									 .setInteger(1, snType)
+									 .setString(0, UUIDUtil.getUUID())
+									 .setString(1, bus_type)
+									 .setInteger(2, snType)
 									.executeUpdate();
 							return null;
 						}
