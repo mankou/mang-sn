@@ -39,7 +39,7 @@ public class SnNumberDAOImplOracle  extends BaseDAOImpl<SnNumber> implements SnN
 			hql="from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.snType=:snType";
 			break;
 		case weekDate:
-			hql="from SnNumber t where t.busType =:busType and t.numDate>=trunc(sysdate,'d')+1 and t.numDate<sysdate and t.snType =:snType ";
+			hql="from SnNumber t where t.busType =:busType and t.numDate>=trunc(sysdate,'iw') and t.numDate<sysdate and t.snType =:snType ";
 			break;
 		case monthDate:
 			hql="from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyymm')=to_char(sysdate,'yyyymm') and t.snType=:snType";
@@ -82,7 +82,7 @@ public class SnNumberDAOImplOracle  extends BaseDAOImpl<SnNumber> implements SnN
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and to_char(t.numDate,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.snType=:snType";
 			break;
 		case weekDate:
-			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=trunc(sysdate,'d')+1 and t.numDate<sysdate and t.snType =:snType ";
+			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=trunc(sysdate,'iw') and t.numDate<sysdate and t.snType =:snType ";
 			break;
 		case monthDate: 
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and to_char(t.numDate,'yyyymm')=to_char(sysdate,'yyyymm') and t.snType=:snType";
@@ -130,21 +130,6 @@ public class SnNumberDAOImplOracle  extends BaseDAOImpl<SnNumber> implements SnN
 			default:
 				break;
 			}
-			
-//			final String ORDERNUMBER_SQL = sql;
-//			logger.debug("生成的sql为"+ORDERNUMBER_SQL);
-//			Long orderNumber = (Long) getHibernateTemplate().execute(
-//					new HibernateCallback() {
-//						public Object doInHibernate(Session session)
-//								throws HibernateException {
-//							session.createSQLQuery(ORDERNUMBER_SQL)
-//									 .setString(0, UUIDUtil.getUUID())
-//									 .setString(1, bus_type)
-//									 .setInteger(2, snType)
-//									.executeUpdate();
-//							return null;
-//						}
-//					});
 			
 			SQLQuery query=this.getSession().createSQLQuery(sql);
 			query.setString(0, UUIDUtil.getUUID());

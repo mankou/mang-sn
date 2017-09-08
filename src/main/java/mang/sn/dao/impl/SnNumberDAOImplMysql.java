@@ -39,7 +39,9 @@ public class SnNumberDAOImplMysql  extends BaseDAOImpl<SnNumber> implements SnNu
 			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y-%m-%d')=date_format(sysdate(),'%Y-%m-%d') and t.snType=:snType order by t.numDate desc";
 			break;
 		case weekDate:
-			hql="from SnNumber t where t.busType =:busType and t.numDate>=subdate(curdate(),date_format(curdate(),'%w')-1) and t.numDate<sysdate() and t.snType =:snType order by t.numDate desc";
+//			hql="from SnNumber t where t.busType =:busType and t.numDate>=subdate(curdate(),date_format(curdate(),'%w')-1) and t.numDate<sysdate() and t.snType =:snType order by t.numDate desc";
+			//说明 因数据库取周几的函数   0表示周日 1表示周一  如果当前时间是周一到周六都正常 但如果是周日其取出来的是下周一的时间 所以需要在sql语句中写case when语句
+			hql="from SnNumber t where t.busType =:busType and t.numDate>=subdate( curdate(), case date_format(curdate(), '%w') when 0 then 6 else (date_format(curdate(), '%w')-1) end) and t.numDate<sysdate() and t.snType =:snType order by t.numDate desc";
 			break;
 		case monthDate:
 			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y-%m')=date_format(sysdate(),'%Y-%m') and t.snType=:snType order by t.numDate desc ";
@@ -82,8 +84,8 @@ public class SnNumberDAOImplMysql  extends BaseDAOImpl<SnNumber> implements SnNu
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y%m%d')=date_format(sysdate(),'%Y%m%d') and t.snType=:snType";
 			break;
 		case weekDate:
-			//TODO bug 如果今天是周日 其时间函数查到是下周一的数据 会产生问题
-			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=subdate(curdate(),date_format(curdate(),'%w')-1) and t.numDate<sysdate() and t.snType =:snType ";
+//			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=subdate(curdate(),date_format(curdate(),'%w')-1) and t.numDate<sysdate() and t.snType =:snType ";
+			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=subdate( curdate(), case date_format(curdate(), '%w') when 0 then 6 else (date_format(curdate(), '%w')-1) end) and t.numDate<sysdate() and t.snType =:snType ";
 			break;
 		case monthDate: 
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y-%m')=date_format(sysdate(),'%Y-%m') and t.snType=:snType";
