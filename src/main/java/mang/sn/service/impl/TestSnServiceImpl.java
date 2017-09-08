@@ -35,6 +35,12 @@ public class TestSnServiceImpl implements TestSnService {
 		
 		
 	}
+	
+	@Override
+	public void testDaySn() {
+		String sn=snService.doGetSn("QC", "test", SnType.dayDate, null);
+		System.out.println(sn);
+	}
 
 	@Override
 	public void testYearSn() {

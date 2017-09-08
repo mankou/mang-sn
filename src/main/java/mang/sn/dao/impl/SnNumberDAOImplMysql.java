@@ -36,26 +36,19 @@ public class SnNumberDAOImplMysql  extends BaseDAOImpl<SnNumber> implements SnNu
 		
 		switch (snTypeEnum) {
 		case dayDate:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType for update";
-//			hql="select t.maxindex  from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.snType=:snType";
-			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y-%m-%d')=date_format(sysdate(),'%Y-%m-%d') and t.snType=:snType";
-			break;
-		case number:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.sn_type=:snType for update";
-			hql="from SnNumber t where t.busType = :busType and t.snType=:snType";
+			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y-%m-%d')=date_format(sysdate(),'%Y-%m-%d') and t.snType=:snType order by t.numDate desc";
 			break;
 		case weekDate:
-			//TODO 这有问题 mysql不知道有没有trunc这样的东西
-//			sql="select t.maxindex from sn_number t where t.bus_type =:busType and t.num_date>=trunc(sysdate,'d')+1 and t.num_date<sysdate and t.sn_type =:snType for update";
-			hql="from SnNumber t where t.busType =:busType and t.numDate>=trunc(sysdate,'d')+1 and t.numDate<sysdate and t.snType =:snType ";
+			hql="from SnNumber t where t.busType =:busType and t.numDate>=subdate(curdate(),date_format(curdate(),'%w')-1) and t.numDate<sysdate() and t.snType =:snType order by t.numDate desc";
 			break;
 		case monthDate:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymm')=to_char(sysdate,'yyyymm') and t.sn_type=:snType for update";
-			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y-%m')=date_format(sysdate(),'%Y-%m') and t.snType=:snType";
+			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y-%m')=date_format(sysdate(),'%Y-%m') and t.snType=:snType order by t.numDate desc ";
 			break;
 		case yearDate:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyy')=to_char(sysdate,'yyyy') and t.sn_type=:snType for update";
-			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y')=date_format(sysdate(),'%Y') and t.snType=:snType";
+			hql="from SnNumber t where t.busType = :busType and date_format(t.numDate,'%Y')=date_format(sysdate(),'%Y') and t.snType=:snType order by t.numDate desc";
+			break;
+		case number:
+			hql="from SnNumber t where t.busType = :busType and t.snType=:snType order by t.numDate desc";
 			break;
 		default:
 			break;
@@ -86,24 +79,19 @@ public class SnNumberDAOImplMysql  extends BaseDAOImpl<SnNumber> implements SnNu
 		SnType snTypeEnum=SnType.getInstance(snType);
 		switch (snTypeEnum) {
 		case dayDate: 
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType";
-			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y%m%d')=date_format(sysdate(),'%Y%m%d') and t.snType=:snType";
-			break;
-		case monthDate: 
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymm')=to_char(sysdate,'yyyymm') and t.sn_type=:snType";
-			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y%m%d')=date_format(sysdate(),'%Y%m%d') and t.snType=:snType";
-			break;
-		case yearDate:
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyy')=to_char(sysdate,'yyyy') and t.sn_type=:snType";
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y%m%d')=date_format(sysdate(),'%Y%m%d') and t.snType=:snType";
 			break;
 		case weekDate:
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type =:busType and t.num_date>=trunc(sysdate,'d')+1 and t.num_date<sysdate and t.sn_type =:snType ";
-			//TODO 时间trunc有问题
-			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.date_format>=trunc(sysdate,'d')+1 and t.numDate<sysdate() and t.snType =:snType ";
+			//TODO bug 如果今天是周日 其时间函数查到是下周一的数据 会产生问题
+			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=subdate(curdate(),date_format(curdate(),'%w')-1) and t.numDate<sysdate() and t.snType =:snType ";
+			break;
+		case monthDate: 
+			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y-%m')=date_format(sysdate(),'%Y-%m') and t.snType=:snType";
+			break;
+		case yearDate:
+			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and date_format(t.numDate,'%Y')=date_format(sysdate(),'%Y') and t.snType=:snType";
 			break;
 		case number:
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.sn_type=:snType";
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and t.snType=:snType";
 			break;
 		default:

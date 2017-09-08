@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.springframework.stereotype.Repository;
@@ -35,25 +36,19 @@ public class SnNumberDAOImplOracle  extends BaseDAOImpl<SnNumber> implements SnN
 		
 		switch (snTypeEnum) {
 		case dayDate:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType for update";
-//			hql="select t.maxindex  from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.snType=:snType";
 			hql="from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.snType=:snType";
 			break;
-		case number:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and t.sn_type=:snType for update";
-			hql="from SnNumber t where t.busType = :busType and t.snType=:snType";
-			break;
 		case weekDate:
-//			sql="select t.maxindex from sn_number t where t.bus_type =:busType and t.num_date>=trunc(sysdate,'d')+1 and t.num_date<sysdate and t.sn_type =:snType for update";
 			hql="from SnNumber t where t.busType =:busType and t.numDate>=trunc(sysdate,'d')+1 and t.numDate<sysdate and t.snType =:snType ";
 			break;
 		case monthDate:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyymm')=to_char(sysdate,'yyyymm') and t.sn_type=:snType for update";
 			hql="from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyymm')=to_char(sysdate,'yyyymm') and t.snType=:snType";
 			break;
 		case yearDate:
-//			sql="select t.maxindex  from sn_number t where t.bus_type = :busType and to_char(t.num_date,'yyyy')=to_char(sysdate,'yyyy') and t.sn_type=:snType for update";
 			hql="from SnNumber t where t.busType = :busType and to_char(t.numDate,'yyyy')=to_char(sysdate,'yyyy') and t.snType=:snType";
+			break;
+		case number:
+			hql="from SnNumber t where t.busType = :busType and t.snType=:snType";
 			break;
 		default:
 			break;
@@ -64,8 +59,8 @@ public class SnNumberDAOImplOracle  extends BaseDAOImpl<SnNumber> implements SnN
 		Query query=this.getSession().createQuery(hql);
 		query.setString("busType", busType);
 		query.setInteger("snType", snType);
-//		query.setLockOptions();
-		query.setLockMode("t", LockMode.UPGRADE);
+		query.setLockOptions(LockOptions.UPGRADE);
+//		query.setLockMode("t", LockMode.UPGRADE);
 		List lis=query.list();
 		if(lis.size()>0){
 		 SnNumber snNumber=(SnNumber) lis.get(0);
@@ -84,23 +79,18 @@ public class SnNumberDAOImplOracle  extends BaseDAOImpl<SnNumber> implements SnN
 		SnType snTypeEnum=SnType.getInstance(snType);
 		switch (snTypeEnum) {
 		case dayDate: 
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.sn_type=:snType";
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and to_char(t.numDate,'yyyymmdd')=to_char(sysdate,'yyyymmdd') and t.snType=:snType";
 			break;
+		case weekDate:
+			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=trunc(sysdate,'d')+1 and t.numDate<sysdate and t.snType =:snType ";
+			break;
 		case monthDate: 
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyymm')=to_char(sysdate,'yyyymm') and t.sn_type=:snType";
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and to_char(t.numDate,'yyyymm')=to_char(sysdate,'yyyymm') and t.snType=:snType";
 			break;
 		case yearDate:
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and to_char(t.num_date,'yyyy')=to_char(sysdate,'yyyy') and t.sn_type=:snType";
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and to_char(t.numDate,'yyyy')=to_char(sysdate,'yyyy') and t.snType=:snType";
 			break;
-		case weekDate:
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type =:busType and t.num_date>=trunc(sysdate,'d')+1 and t.num_date<sysdate and t.sn_type =:snType ";
-			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType =:busType and t.numDate>=trunc(sysdate,'d')+1 and t.numDate<sysdate and t.snType =:snType ";
-			break;
 		case number:
-//			sql="update SN_NUMBER t set t.maxindex = :maxIndex where t.bus_type = :busType and t.sn_type=:snType";
 			hql="update SnNumber t set t.maxindex = :maxIndex where t.busType = :busType and t.snType=:snType";
 			break;
 		default:
