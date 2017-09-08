@@ -1,13 +1,9 @@
 package mang.sn.service.impl;
 
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TimeZone;
 
-import javax.persistence.SynchronizationType;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +16,7 @@ import mang.sn.dao.SnNumberDAO;
 import mang.sn.dao.SnNumberLogDAO;
 import mang.sn.dao.TimeDAO;
 import mang.sn.entity.SnNumberLog;
-import mang.sn.generate.DayDateGenerate;
+import mang.sn.generate.DayNumberGenerate;
 import mang.sn.generate.SnGenerate;
 import mang.sn.service.SnService;
 import mang.sn.tools.InvokeCode;
@@ -37,15 +33,16 @@ public class SnServiceImpl implements SnService {
 	@Qualifier("sn-invokeCode")
 	private InvokeCode invodeCode;
 	
-	
-	@Autowired
-	private SnNumberDAO snNumberDAO;
-	
 	@Autowired
 	private SnNumberLogDAO snNumberLogDAO;
 	
-	@Autowired
+	private SnNumberDAO snNumberDAO;
+	
 	private TimeDAO timeDAO;
+	
+	
+	
+	
 	
 
 
@@ -54,7 +51,7 @@ public class SnServiceImpl implements SnService {
 	@Override
 	@Transactional(propagation=Propagation.REQUIRES_NEW)
 	public String doGetDayDateSn(String prefix, String type) {
-		String code = doGetSn(prefix, type, SnType.dayDate, new DayDateGenerate());
+		String code = doGetSn(prefix, type, SnType.dayDate, new DayNumberGenerate());
 		return code;
 	}
 
@@ -109,7 +106,7 @@ public class SnServiceImpl implements SnService {
 		// 取最大值
 		Long maxIndex = null;
 		maxIndex = getMaxIndex(busType, snTypeCode);
-		Timestamp time=timeDAO.getOracleTime();
+		Timestamp time=timeDAO.getDbTime();
 		String dbTimeStr_Hour=TimestampUtil.getDateString(time, "yyyyMMddHH");
 		String dbTimeStr_Day=TimestampUtil.getDateString(time, "yyyyMMdd");
 		String dbTimeStr_Year=TimestampUtil.getDateString(time, "yyyy");
@@ -124,7 +121,7 @@ public class SnServiceImpl implements SnService {
 		
 		if(snGenerate==null){
 			logger.info("[生成单号]生成类snGenerate为空 这里采用默认的生成类");
-			snGenerate=new DayDateGenerate();
+			snGenerate=new DayNumberGenerate();
 		}
 		
 		code=snGenerate.generateSn(prefix, maxIndex, paraMap);
@@ -189,6 +186,30 @@ public class SnServiceImpl implements SnService {
 			logger.info("[生成单号]调用java类信息:"+message);
 		}
 		return message;
+	}
+
+	public SnNumberDAO getSnNumberDAO() {
+		return snNumberDAO;
+	}
+
+	public void setSnNumberDAO(SnNumberDAO snNumberDAO) {
+		this.snNumberDAO = snNumberDAO;
+	}
+
+	public TimeDAO getTimeDAO() {
+		return timeDAO;
+	}
+
+	public void setTimeDAO(TimeDAO timeDAO) {
+		this.timeDAO = timeDAO;
+	}
+
+	public InvokeCode getInvodeCode() {
+		return invodeCode;
+	}
+
+	public void setInvodeCode(InvokeCode invodeCode) {
+		this.invodeCode = invodeCode;
 	}
 	
 }

@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 
 public interface TimeDAO {
 	/**
-	 * 获取oracle时间
+	 * 获取数据库时间
 	 * */
-	public Timestamp getOracleTime();
+	public Timestamp getDbTime();
 }

@@ -67,8 +67,5 @@
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
 	
 	  
-	<bean id="sn-invokeCode" class="mang.sn.tools.InvokeCode">
-		<property name="classPath" value="mang.sn" />
-	</bean>
-	
+	<import resource="applicationContext-sn-oracle.xml"/>
 </beans>

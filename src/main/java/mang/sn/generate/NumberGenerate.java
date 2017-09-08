@@ -3,12 +3,16 @@ package mang.sn.generate;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+/**
+ * 单号样例  QC00000002 
+ * */
 public class NumberGenerate implements SnGenerate {
 	
 	private String precision="8";
 	
 	@Override
 	public String generateSn(String prefix, Long maxIndex, Map<String, Object> map) {
+		
 		// 如果前缀为空则用""代替
 		if (prefix == null) {
 			prefix = "";

@@ -1,0 +1,1 @@
+SELECT * FROM sn_number_log t ORDER BY t.rundate DESC;

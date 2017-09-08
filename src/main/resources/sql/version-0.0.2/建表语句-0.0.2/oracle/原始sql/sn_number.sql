@@ -2,7 +2,7 @@
 drop table SN_NUMBER;
 create table SN_NUMBER
 (
-  id        NUMBER,
+  id       varchar2(32),
   sn_type number(2),
   bus_type  VARCHAR2(32),
   maxindex  INTEGER,
@@ -21,5 +21,4 @@ comment on column SN_NUMBER.sn_type
   is '单号计数类型0每天从1开始 1计数一直累加不清零 2计数每周从1开始 3计数每月从1开始 4计数每年从1开始';
 alter table SN_NUMBER
   add constraint PK_SN_NUMBER primary key (ID);
-
 

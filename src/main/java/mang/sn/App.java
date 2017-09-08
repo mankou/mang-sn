@@ -20,13 +20,14 @@ public class App
         DOMConfigurator.configure(ClassLoader.getSystemResource("log4j.xml"));
         
         
-        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+//        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext-oracle.xml");
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext-mysql.xml");
         
         TestSnService service=ctx.getBean(TestSnService.class);
 //        service.testTransaction();
 //        service.testYearSn();
-        service.testMonthSn();
-//        service.testWeekSn();
+//        service.testMonthSn();
+        service.testWeekSn();
         
         
         
