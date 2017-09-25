@@ -31,7 +31,7 @@ public class SnServiceImpl implements SnService {
 	
 	@Autowired(required=false)
 	@Qualifier("sn-invokeCode")
-	private InvokeCode invodeCode;
+	private InvokeCode invokeCode;
 	
 	@Autowired
 	private SnNumberLogDAO snNumberLogDAO;
@@ -164,8 +164,8 @@ public class SnServiceImpl implements SnService {
 	private String getInvokeInfo(){
 		//获取调用该方法的方法的信息
 		String message ="";
-		if(invodeCode!=null &&invodeCode.getClassPath()!=null && !"".equals(invodeCode.getClassPath())){
-			String invokeCodePath=invodeCode.getClassPath();
+		if(invokeCode!=null &&invokeCode.getClassPath()!=null && !"".equals(invokeCode.getClassPath())){
+			String invokeCodePath=invokeCode.getClassPath();
 			
 			
 			StringBuffer sb = new StringBuffer();
@@ -204,12 +204,12 @@ public class SnServiceImpl implements SnService {
 		this.timeDAO = timeDAO;
 	}
 
-	public InvokeCode getInvodeCode() {
-		return invodeCode;
+	public InvokeCode getInvokeCode() {
+		return invokeCode;
 	}
 
-	public void setInvodeCode(InvokeCode invodeCode) {
-		this.invodeCode = invodeCode;
+	public void setInvokeCode(InvokeCode invokeCode) {
+		this.invokeCode = invokeCode;
 	}
 	
 }

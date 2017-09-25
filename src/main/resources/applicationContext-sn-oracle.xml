@@ -24,7 +24,7 @@
 	<bean id="snService" class="mang.sn.service.impl.SnServiceImpl">
 		<property name="snNumberDAO" ref="snNumberDAOImplOracle" />
 		<property name="timeDAO" ref="timeDAOImplOracle" />
-		<property name="invodeCode" ref="sn-invokeCode" />
+		<property name="invokeCode" ref="sn-invokeCode" />
 	</bean>
 	
 </beans>
